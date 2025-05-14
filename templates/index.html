@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>To-Do List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 40px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .todo-container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 700px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form.add-task {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      margin-bottom: 30px;
+      align-items: center;
+    }
+
+    form.add-task input {
+      flex: 1 1 auto;
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    form.add-task button {
+      padding: 10px 15px;
+      font-size: 14px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    ul.task-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    li.task-item {
+      background-color: #f0f0f0;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+    }
+
+    .task-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .task-info {
+      flex: 1;
+    }
+
+    .progress-bar-container {
+      background-color: #ddd;
+      border-radius: 4px;
+      height: 10px;
+      margin-top: 8px;
+    }
+
+    .progress-bar {
+      height: 10px;
+      border-radius: 4px;
+      background-color: #4CAF50;
+    }
+
+    .action-buttons form {
+      display: inline;
+      margin-left: 5px;
+    }
+
+    .action-buttons button {
+      font-size: 12px;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .btn-increment {
+      background-color: #2196F3;
+      color: white;
+    }
+
+    .btn-complete {
+      background-color: #FF9800;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="todo-container">
+    <h1>To-Do List</h1>
+
+    <form class="add-task" method="POST" action="{{ url_for('home') }}">
+      {{ form.hidden_tag() }}
+      <input type="text" name="name" placeholder="Task name" required />
+      <input type="text" name="category" placeholder="Category (optional)" />
+      <input type="text" name="description" placeholder="Description (optional)" />
+      <button type="submit">Add</button>
+    </form>
+
+    <ul class="task-list">
+      {% for item in items %}
+      <li class="task-item">
+        <div class="task-row">
+          <div class="task-info">
+            <strong>{{ item.name }}</strong>
+            {% if item.category %}( {{ item.category }} ){% endif %}
+            {% if item.description %} – {{ item.description }}{% endif %}
+             – {{ item.completed }}%
+            <div class="progress-bar-container">
+              <div class="progress-bar" style="width: {{ item.completed }}%;"></div>
+            </div>
+          </div>
+          <div class="action-buttons">
+            <form method="GET" action="{{ url_for('progress', id=item.id) }}">
+              <button class="btn-increment" type="submit">+10%</button>
+            </form>
+            <form method="GET" action="{{ url_for('complete', id=item.id) }}">
+              <button class="btn-complete" type="submit">Complete</button>
+            </form>
+          </div>
+        </div>
+      </li>
+      {% else %}
+      <li class="task-item">No tasks yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</body>
+</html>
