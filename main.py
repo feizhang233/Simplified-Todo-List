@@ -3,7 +3,7 @@ import os
 from flask import Flask, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy import Integer, String, Boolean  # 修改位置A: 增加 Integer 導入
+from sqlalchemy import Integer, String
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired, Optional
@@ -19,17 +19,14 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 class Base(DeclarativeBase):
     pass
 
-# 修改位置1: 確保 instance folder 存在，以便建立資料庫檔案
 # Create the instance folder if it doesn't exist (for database storage)
 os.makedirs(app.instance_path, exist_ok=True)
 
-# 修改位置2: 更改資料庫檔名為 todos.db，避免與咖啡館 DB 混淆
 # Configure SQLite database path in the instance folder
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///" + os.path.join(app.instance_path, "todos.db")
 
 # Initialize SQLAlchemy with the Flask app and custom base model class
 db = SQLAlchemy(app, model_class=Base)
-# 不需要再次 init_app，已在 SQLAlchemy(app, ...) 中初始化
 # No need to call init_app() again as it's already initialized in SQLAlchemy constructor
 
 # Define Todo_model for database table
